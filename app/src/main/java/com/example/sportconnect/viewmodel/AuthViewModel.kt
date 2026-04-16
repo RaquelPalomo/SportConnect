@@ -12,6 +12,7 @@ sealed class AuthUiState {
     object Loading : AuthUiState()
     data class Success(val rol: String) : AuthUiState()
     data class Error(val mensaje: String) : AuthUiState()
+    object PasswordResetSent : AuthUiState()
 }
 
 class AuthViewModel : ViewModel() {
@@ -59,5 +60,15 @@ class AuthViewModel : ViewModel() {
 
     fun resetState() {
         _uiState.value = AuthUiState.Idle
+    }
+    fun recuperarPassword(email: String) {
+        viewModelScope.launch {
+            val result = repository.recuperarPassword(email)
+            _uiState.value = if (result.isSuccess) {
+                AuthUiState.PasswordResetSent
+            } else {
+                AuthUiState.Error("No se pudo enviar el email de recuperación")
+            }
+        }
     }
 }
