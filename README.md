@@ -25,27 +25,24 @@ SportConnect permite:
 
 ## Instalación y ejecución
 
-1. Clona el repositorio:
-```bash
-git clone https://github.com/RaquelPalomo/SportConnect.git
-```
+1. Clona el repositorio: `git clone https://github.com/RaquelPalomo/SportConnect.git`
 2. Abre el proyecto en **Android Studio**
 3. Añade el archivo `google-services.json` en la carpeta `app/` (no incluido por seguridad)
-4. Pulsa **Run** para compilar y ejecutar
+4. Pulsa **Run ▶** para compilar y ejecutar
 
 ## Estructura del proyecto
 
-app/src/main/java/com/example/sportconnect/
-├── data/
-│   ├── model/          → Clases de datos (Usuario, Actividad, Reserva)
-│   └── repository/     → Acceso a Firebase (Auth, Actividad, Profesional, Admin)
-├── ui/
-│   ├── auth/           → Login y Registro
-│   ├── basic/          → Pantallas usuario básico
-│   ├── professional/   → Pantallas usuario profesional
-│   └── admin/          → Panel de administración
-├── viewmodel/          → Lógica de negocio y estado de UI
-└── utils/              → Utilidades y constantes
+    app/src/main/java/com/example/sportconnect/
+    ├── data/
+    │   ├── model/          → Clases de datos (Usuario, Actividad, Reserva)
+    │   └── repository/     → Acceso a Firebase (Auth, Actividad, Profesional, Admin)
+    ├── ui/
+    │   ├── auth/           → Login y Registro
+    │   ├── basic/          → Pantallas usuario básico
+    │   ├── professional/   → Pantallas usuario profesional
+    │   └── admin/          → Panel de administración
+    ├── viewmodel/          → Lógica de negocio y estado de UI
+    └── utils/              → Utilidades y constantes
 
 ## Roles de usuario
 
