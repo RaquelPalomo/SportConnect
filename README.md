@@ -31,7 +31,7 @@ git clone https://github.com/RaquelPalomo/SportConnect.git
 ```
 2. Abre el proyecto en **Android Studio**
 3. Añade el archivo `google-services.json` en la carpeta `app/` (no incluido por seguridad)
-4. Pulsa **Run ▶** para compilar y ejecutar
+4. Pulsa **Run** para compilar y ejecutar
 
 ## Estructura del proyecto
 
