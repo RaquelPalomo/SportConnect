@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/white">
+    android:background="@drawable/gradient_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,29 +13,45 @@
         android:gravity="center_horizontal"
         android:padding="32dp">
 
+        <!-- Logo -->
         <ImageView
             android:id="@+id/imgLogo"
             android:layout_width="160dp"
             android:layout_height="160dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="48dp"
             android:layout_marginBottom="8dp"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/logoapp"
             android:contentDescription="Logo SportConnect" />
 
+        <!-- Título -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SportConnect"
-            android:textSize="26sp"
+            android:textSize="30sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="32dp" />
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="6dp" />
 
+        <!-- Subtítulo -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tu plataforma de actividades deportivas"
+            android:textSize="13sp"
+            android:textColor="#AAFFFFFF"
+            android:layout_marginBottom="40dp" />
+
+        <!-- Campo email -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Correo electrónico"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:hintTextColor="#FFFFFF"
+            app:boxStrokeColor="#FF6B35"
+            app:boxStrokeWidth="1dp"
+            app:boxBackgroundColor="#22FFFFFF"
             android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -43,16 +59,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#88FFFFFF" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Campo contraseña -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Contraseña"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:hintTextColor="#FFFFFF"
+            app:boxStrokeColor="#FF6B35"
+            app:boxStrokeWidth="1dp"
+            app:boxBackgroundColor="#22FFFFFF"
             app:passwordToggleEnabled="true"
+            app:passwordToggleTint="#FFFFFF"
             android:layout_marginBottom="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -60,49 +84,98 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#88FFFFFF" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Olvidaste contraseña -->
         <TextView
             android:id="@+id/tvOlvidaste"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="¿Olvidaste tu contraseña?"
-            android:textColor="@color/black"
+            android:textColor="#FF6B35"
+            android:textSize="13sp"
             android:layout_gravity="end"
             android:padding="4dp"
             android:layout_marginBottom="24dp" />
 
+        <!-- Botón login -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:text="Iniciar sesión"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@null"
+            android:background="@drawable/button_gradient"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Separador -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#44FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  ¿No tienes cuenta?  "
+                android:textColor="#88FFFFFF"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#44FFFFFF" />
+
+        </LinearLayout>
+
+        <!-- Botón registro -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/tvIrRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Crear cuenta"
+            android:textSize="16sp"
+            android:textColor="#FF6B35"
+            android:backgroundTint="@null"
+            android:background="@android:color/transparent"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:strokeColor="#FF6B35"
+            app:strokeWidth="2dp"
             android:layout_marginBottom="12dp" />
 
-        <TextView
-            android:id="@+id/tvIrRegistro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="¿No tienes cuenta? Regístrate"
-            android:textColor="@color/black"
-            android:padding="8dp" />
-
+        <!-- Error -->
         <TextView
             android:id="@+id/tvError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#D32F2F"
+            android:textColor="#FF6B6B"
             android:textAlignment="center"
             android:layout_marginTop="8dp"
             android:visibility="gone" />
 
+        <!-- ProgressBar -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:indeterminateTint="#FF6B35"
             android:visibility="gone" />
 
     </LinearLayout>

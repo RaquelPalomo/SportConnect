@@ -5,14 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#22FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
+
+        <!-- Franja naranja superior -->
+        <View
+            android:layout_width="48dp"
+            android:layout_height="3dp"
+            android:background="#FF6B35"
+            android:layout_marginBottom="12dp" />
 
         <TextView
             android:id="@+id/tvTipo"
@@ -21,16 +29,16 @@
             android:text="Yoga"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="4dp" />
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="6dp" />
 
         <TextView
             android:id="@+id/tvProfesor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Prof: Carlos García"
-            android:textSize="14sp"
-            android:textColor="#555555"
+            android:textSize="13sp"
+            android:textColor="#AAFFFFFF"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -38,8 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Polideportivo Municipal, Madrid"
-            android:textSize="14sp"
-            android:textColor="#555555"
+            android:textSize="13sp"
+            android:textColor="#AAFFFFFF"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -47,9 +55,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="01/06/2026 - 10:00h"
-            android:textSize="14sp"
-            android:textColor="#555555"
-            android:layout_marginBottom="8dp" />
+            android:textSize="13sp"
+            android:textColor="#AAFFFFFF"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Separador -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginBottom="10dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,7 +78,8 @@
                 android:layout_weight="1"
                 android:text="Plazas: 5/15"
                 android:textSize="13sp"
-                android:textColor="#888888" />
+                android:textColor="#FF6B35"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvDuracion"
@@ -71,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:text="60 min"
                 android:textSize="13sp"
-                android:textColor="#888888" />
+                android:textColor="#AAFFFFFF" />
 
         </LinearLayout>
 

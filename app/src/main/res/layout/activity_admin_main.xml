@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@drawable/gradient_background">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:title="Panel de administración" />
+        android:background="#22FFFFFF"
+        android:title="Panel de administración"
+        app:titleTextColor="#FFFFFF" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white" />
+        android:background="#22FFFFFF"
+        app:tabTextColor="#AAFFFFFF"
+        app:tabSelectedTextColor="#FFFFFF"
+        app:tabIndicatorColor="#FF6B35"
+        app:tabIndicatorHeight="3dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerAdmin"
@@ -34,7 +40,7 @@
         android:gravity="center"
         android:text="No hay datos disponibles"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="#AAFFFFFF"
         android:visibility="gone" />
 
     <ProgressBar
@@ -42,6 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:indeterminateTint="#FF6B35"
         android:visibility="gone" />
 
 </LinearLayout>

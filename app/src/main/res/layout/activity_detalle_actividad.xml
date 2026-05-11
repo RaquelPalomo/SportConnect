@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@drawable/gradient_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,84 +11,125 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+        <!-- Tipo de actividad -->
         <TextView
             android:id="@+id/tvTipo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="26sp"
+            android:textSize="30sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp" />
 
+        <!-- Descripción -->
         <TextView
             android:id="@+id/tvDescripcion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:textColor="#444444"
+            android:textColor="#AAFFFFFF"
             android:layout_marginBottom="24dp" />
 
+        <!-- Separador -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Título detalles -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Detalles"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="12dp" />
+            android:textColor="#FF6B35"
+            android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:id="@+id/tvProfesor"
+        <!-- Card con detalles -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="#555555"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#22FFFFFF">
 
-        <TextView
-            android:id="@+id/tvLugar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="#555555"
-            android:layout_marginBottom="8dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvFecha"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="#555555"
-            android:layout_marginBottom="8dp" />
+                <TextView
+                    android:id="@+id/tvProfesor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#FFFFFF"
+                    android:drawablePadding="8dp"
+                    android:layout_marginBottom="12dp" />
 
-        <TextView
-            android:id="@+id/tvDuracion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="#555555"
-            android:layout_marginBottom="8dp" />
+                <TextView
+                    android:id="@+id/tvLugar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#FFFFFF"
+                    android:drawablePadding="8dp"
+                    android:layout_marginBottom="12dp" />
 
-        <TextView
-            android:id="@+id/tvPlazas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="#555555"
-            android:layout_marginBottom="32dp" />
+                <TextView
+                    android:id="@+id/tvFecha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#FFFFFF"
+                    android:drawablePadding="8dp"
+                    android:layout_marginBottom="12dp" />
 
+                <TextView
+                    android:id="@+id/tvDuracion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#FFFFFF"
+                    android:drawablePadding="8dp"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/tvPlazas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#FF6B35"
+                    android:textStyle="bold"
+                    android:drawablePadding="8dp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Botón reservar -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnReservar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:text="Reservar plaza"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@null"
+            android:background="@drawable/button_gradient"
             android:layout_marginBottom="12dp" />
 
         <TextView
             android:id="@+id/tvError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#D32F2F"
+            android:textColor="#FF6B6B"
             android:textAlignment="center"
             android:visibility="gone" />
 
@@ -96,6 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:indeterminateTint="#FF6B35"
             android:visibility="gone" />
 
     </LinearLayout>
