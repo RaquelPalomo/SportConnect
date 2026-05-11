@@ -5,13 +5,14 @@ import com.example.sportconnect.data.model.Reserva
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import java.util.Date
 
 class ActividadRepository {
 
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-    // Obtiene todas las actividades activas con plazas disponibles
+    // Obtiene todas las actividades activas, con plazas disponibles y fecha futura
     suspend fun getActividades(): Result<List<Actividad>> {
         return try {
             val snapshot = db.collection("actividades")
@@ -19,9 +20,14 @@ class ActividadRepository {
                 .get()
                 .await()
 
+            val ahora = Date()
+
             val actividades = snapshot.documents.mapNotNull { doc ->
                 doc.toObject(Actividad::class.java)?.copy(id = doc.id)
-            }.filter { it.participantesActuales < it.maxParticipantes }
+            }.filter {
+                it.participantesActuales < it.maxParticipantes &&
+                        it.fecha?.toDate()?.after(ahora) == true
+            }
 
             Result.success(actividades)
         } catch (e: Exception) {

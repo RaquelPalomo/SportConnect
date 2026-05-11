@@ -25,8 +25,6 @@ class ProfesionalViewModel : ViewModel() {
     private val _uiState = MutableLiveData<ProfesionalUiState>(ProfesionalUiState.Idle)
     val uiState: LiveData<ProfesionalUiState> = _uiState
 
-    private var todasLasActividades: List<Actividad> = emptyList()
-
     fun crearActividad(
         tipo: String,
         descripcion: String,
@@ -63,31 +61,26 @@ class ProfesionalViewModel : ViewModel() {
         }
     }
 
+    // Carga directamente las pendientes al iniciar
     fun cargarMisActividades() {
-        _uiState.value = ProfesionalUiState.Loading
-        viewModelScope.launch {
-            val result = repository.getMisActividades()
-            if (result.isSuccess) {
-                todasLasActividades = result.getOrDefault(emptyList())
-                _uiState.value = ProfesionalUiState.Success(todasLasActividades)
-            } else {
-                _uiState.value = ProfesionalUiState.Error("Error al cargar tus actividades")
-            }
-        }
+        filtrarPorEstado(soloFuturas = true)
     }
 
+    // Consulta Firestore directamente según el estado
     fun filtrarPorEstado(soloFuturas: Boolean) {
-        val ahora = Date()
-        val filtradas = if (soloFuturas) {
-            todasLasActividades.filter { actividad ->
-                actividad.fecha?.toDate()?.after(ahora) == true
+        _uiState.value = ProfesionalUiState.Loading
+        viewModelScope.launch {
+            val result = if (soloFuturas) {
+                repository.getMisActividadesPendientes()
+            } else {
+                repository.getMisActividadesCompletadas()
             }
-        } else {
-            todasLasActividades.filter { actividad ->
-                actividad.fecha?.toDate()?.before(ahora) == true
+            if (result.isSuccess) {
+                _uiState.value = ProfesionalUiState.Success(result.getOrDefault(emptyList()))
+            } else {
+                _uiState.value = ProfesionalUiState.Error("Error al cargar las actividades")
             }
         }
-        _uiState.value = ProfesionalUiState.Success(filtradas)
     }
 
     fun resetState() {

@@ -48,13 +48,39 @@ class ProfesionalRepository {
         }
     }
 
-    suspend fun getMisActividades(): Result<List<Actividad>> {
+    suspend fun getMisActividadesPendientes(): Result<List<Actividad>> {
         return try {
             val uid = auth.currentUser?.uid
                 ?: return Result.failure(Exception("Usuario no autenticado"))
 
+            val ahora = Timestamp.now()
+
             val snapshot = db.collection("actividades")
                 .whereEqualTo("profesorId", uid)
+                .whereGreaterThan("fecha", ahora)
+                .get()
+                .await()
+
+            val actividades = snapshot.documents.mapNotNull { doc ->
+                doc.toObject(Actividad::class.java)?.copy(id = doc.id)
+            }
+
+            Result.success(actividades)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getMisActividadesCompletadas(): Result<List<Actividad>> {
+        return try {
+            val uid = auth.currentUser?.uid
+                ?: return Result.failure(Exception("Usuario no autenticado"))
+
+            val ahora = Timestamp.now()
+
+            val snapshot = db.collection("actividades")
+                .whereEqualTo("profesorId", uid)
+                .whereLessThanOrEqualTo("fecha", ahora)
                 .get()
                 .await()
 

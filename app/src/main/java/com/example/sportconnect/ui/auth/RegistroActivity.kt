@@ -28,7 +28,15 @@ class RegistroActivity : AppCompatActivity() {
             val nombre = binding.etNombre.text.toString().trim()
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
+            val confirmarPassword = binding.etConfirmarPassword.text.toString().trim()
             val rol = if (binding.rbProfesional.isChecked) "profesional" else "basico"
+
+            if (password != confirmarPassword) {
+                binding.tvError.text = "Las contraseñas no coinciden"
+                binding.tvError.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
             viewModel.registro(nombre, email, password, rol)
         }
 
