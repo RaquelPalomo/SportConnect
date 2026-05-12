@@ -48,6 +48,45 @@ class ProfesionalRepository {
         }
     }
 
+    suspend fun editarActividad(
+        actividadId: String,
+        tipo: String,
+        descripcion: String,
+        lugar: String,
+        poblacion: String,
+        fecha: Timestamp,
+        duracionMinutos: Int,
+        maxParticipantes: Int
+    ): Result<Unit> {
+        return try {
+            db.collection("actividades").document(actividadId).update(
+                mapOf(
+                    "tipo" to tipo,
+                    "descripcion" to descripcion,
+                    "lugar" to lugar,
+                    "poblacion" to poblacion,
+                    "fecha" to fecha,
+                    "duracionMinutos" to duracionMinutos,
+                    "maxParticipantes" to maxParticipantes
+                )
+            ).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun cancelarActividad(actividadId: String): Result<Unit> {
+        return try {
+            db.collection("actividades").document(actividadId)
+                .update("activa", false)
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun getMisActividadesPendientes(): Result<List<Actividad>> {
         return try {
             val uid = auth.currentUser?.uid
@@ -57,6 +96,7 @@ class ProfesionalRepository {
 
             val snapshot = db.collection("actividades")
                 .whereEqualTo("profesorId", uid)
+                .whereEqualTo("activa", true)
                 .whereGreaterThan("fecha", ahora)
                 .get()
                 .await()
@@ -80,7 +120,29 @@ class ProfesionalRepository {
 
             val snapshot = db.collection("actividades")
                 .whereEqualTo("profesorId", uid)
+                .whereEqualTo("activa", true)
                 .whereLessThanOrEqualTo("fecha", ahora)
+                .get()
+                .await()
+
+            val actividades = snapshot.documents.mapNotNull { doc ->
+                doc.toObject(Actividad::class.java)?.copy(id = doc.id)
+            }
+
+            Result.success(actividades)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getMisActividadesCanceladas(): Result<List<Actividad>> {
+        return try {
+            val uid = auth.currentUser?.uid
+                ?: return Result.failure(Exception("Usuario no autenticado"))
+
+            val snapshot = db.collection("actividades")
+                .whereEqualTo("profesorId", uid)
+                .whereEqualTo("activa", false)
                 .get()
                 .await()
 

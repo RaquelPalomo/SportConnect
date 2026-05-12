@@ -7,43 +7,42 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.example.sportconnect.databinding.ActivityCrearActividadBinding
+import com.example.sportconnect.databinding.ActivityEditarActividadBinding
 import com.example.sportconnect.viewmodel.ProfesionalUiState
 import com.example.sportconnect.viewmodel.ProfesionalViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class CrearActividadActivity : AppCompatActivity() {
+class EditarActividadActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityCrearActividadBinding
+    private lateinit var binding: ActivityEditarActividadBinding
     private val viewModel: ProfesionalViewModel by viewModels()
     private val calendario = Calendar.getInstance()
     private val formato = SimpleDateFormat("dd/MM/yyyy - HH:mm'h'", Locale("es", "ES"))
+    private lateinit var actividadId: String
 
     private val tiposActividad = listOf(
-        // Fitness y musculación
         "Crossfit", "Entrenamiento personal", "Musculación", "HIIT",
         "Functional training", "TRX", "Calistenia", "Pilates", "Stretching",
-        // Mente y cuerpo
         "Yoga", "Meditación", "Tai Chi", "Chi Kung",
-        // Baile y ritmo
         "Zumba", "Baile flamenco", "Baile contemporáneo", "Salsa", "Bachata", "Sevillanas",
-        // Deportes de equipo
         "Fútbol sala", "Baloncesto", "Voleibol", "Pádel", "Tenis",
-        // Artes marciales
         "Boxeo", "Kickboxing", "Karate", "Judo", "Taekwondo", "MMA"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCrearActividadBinding.inflate(layoutInflater)
+        binding = ActivityEditarActividadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Nueva actividad"
+        supportActionBar?.title = "Editar actividad"
+
+        actividadId = intent.getStringExtra("actividadId") ?: ""
 
         configurarDropdownTipo()
+        cargarDatosExistentes()
         configurarBotones()
         configurarObservadores()
     }
@@ -62,11 +61,27 @@ class CrearActividadActivity : AppCompatActivity() {
         binding.etTipo.setAdapter(adapterDropdown)
     }
 
+    private fun cargarDatosExistentes() {
+        binding.etTipo.setText(intent.getStringExtra("tipo") ?: "", false)
+        binding.etDescripcion.setText(intent.getStringExtra("descripcion") ?: "")
+        binding.etLugar.setText(intent.getStringExtra("lugar") ?: "")
+        binding.etPoblacion.setText(intent.getStringExtra("poblacion") ?: "")
+        binding.etDuracion.setText(intent.getIntExtra("duracionMinutos", 0).toString())
+        binding.etMaxParticipantes.setText(intent.getIntExtra("maxParticipantes", 0).toString())
+
+        val fechaMillis = intent.getLongExtra("fechaMillis", 0L)
+        if (fechaMillis > 0) {
+            calendario.timeInMillis = fechaMillis
+            binding.tvFechaSeleccionada.text = formato.format(calendario.time)
+        }
+    }
+
     private fun configurarBotones() {
         binding.btnSeleccionarFecha.setOnClickListener {
             mostrarSelectorFecha()
         }
 
+        binding.btnPublicar.text = "Guardar cambios"
         binding.btnPublicar.setOnClickListener {
             val tipo = binding.etTipo.text.toString().trim()
             val descripcion = binding.etDescripcion.text.toString().trim()
@@ -75,8 +90,8 @@ class CrearActividadActivity : AppCompatActivity() {
             val duracion = binding.etDuracion.text.toString().trim().toIntOrNull() ?: 0
             val maxParticipantes = binding.etMaxParticipantes.text.toString().trim().toIntOrNull() ?: 0
 
-            viewModel.crearActividad(
-                tipo, descripcion, lugar, poblacion,
+            viewModel.editarActividad(
+                actividadId, tipo, descripcion, lugar, poblacion,
                 calendario.time, duracion, maxParticipantes
             )
         }
@@ -119,7 +134,7 @@ class CrearActividadActivity : AppCompatActivity() {
                     binding.btnPublicar.isEnabled = false
                     binding.tvError.visibility = View.GONE
                 }
-                is ProfesionalUiState.ActividadCreada -> {
+                is ProfesionalUiState.ActividadEditada -> {
                     binding.progressBar.visibility = View.GONE
                     finish()
                 }

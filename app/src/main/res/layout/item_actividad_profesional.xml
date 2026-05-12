@@ -54,10 +54,12 @@
             android:background="#22FFFFFF"
             android:layout_marginBottom="10dp" />
 
+        <!-- Inscritos y estado -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
 
             <TextView
                 android:id="@+id/tvInscritos"
@@ -76,6 +78,57 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <!-- Botones editar y cancelar — solo visibles en pendientes sin inscritos -->
+        <LinearLayout
+            android:id="@+id/layoutBotones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Editar"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="@null"
+                android:background="@drawable/button_gradient"
+                android:layout_marginEnd="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancelar clase"
+                android:textSize="12sp"
+                android:textColor="#FF6B35"
+                android:backgroundTint="@null"
+                android:background="@android:color/transparent"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="#FF6B35"
+                app:strokeWidth="1dp" />
+
+        </LinearLayout>
+
+        <!-- Solo botón cancelar si hay inscritos -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelarSolo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancelar clase"
+            android:textSize="12sp"
+            android:textColor="#FF6B35"
+            android:backgroundTint="@null"
+            android:background="@android:color/transparent"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:strokeColor="#FF6B35"
+            app:strokeWidth="1dp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

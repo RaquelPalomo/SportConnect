@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sportconnect.R
@@ -19,6 +20,7 @@ class ProfessionalMainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfessionalMainBinding
     private val viewModel: ProfesionalViewModel by viewModels()
     private lateinit var adapter: ProfesionalActividadAdapter
+    private var tabActual = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +39,12 @@ class ProfessionalMainActivity : AppCompatActivity() {
     private fun configurarTabs() {
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Pendientes"))
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Completadas"))
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Canceladas"))
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewModel.filtrarPorEstado(soloFuturas = tab.position == 0)
+                tabActual = tab.position
+                viewModel.filtrarPorEstado(tab = tab.position)
             }
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
@@ -48,9 +52,33 @@ class ProfessionalMainActivity : AppCompatActivity() {
     }
 
     private fun configurarRecycler() {
-        adapter = ProfesionalActividadAdapter(emptyList()) { actividad ->
-            // Detalle de actividad profesional — próxima mejora
-        }
+        adapter = ProfesionalActividadAdapter(
+            actividades = emptyList(),
+            onItemClick = { },
+            onEditarClick = { actividad ->
+                val intent = Intent(this, EditarActividadActivity::class.java).apply {
+                    putExtra("actividadId", actividad.id)
+                    putExtra("tipo", actividad.tipo)
+                    putExtra("descripcion", actividad.descripcion)
+                    putExtra("lugar", actividad.lugar)
+                    putExtra("poblacion", actividad.poblacion)
+                    putExtra("duracionMinutos", actividad.duracionMinutos)
+                    putExtra("maxParticipantes", actividad.maxParticipantes)
+                    putExtra("fechaMillis", actividad.fecha?.toDate()?.time ?: 0L)
+                }
+                startActivity(intent)
+            },
+            onCancelarClick = { actividad ->
+                AlertDialog.Builder(this)
+                    .setTitle("Cancelar clase")
+                    .setMessage("¿Estás seguro de que quieres cancelar ${actividad.tipo}? Los usuarios inscritos perderán su plaza.")
+                    .setPositiveButton("Sí, cancelar") { _, _ ->
+                        viewModel.cancelarActividad(actividad.id)
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            }
+        )
         binding.recyclerMisActividades.layoutManager = LinearLayoutManager(this)
         binding.recyclerMisActividades.adapter = adapter
     }
@@ -74,11 +102,21 @@ class ProfessionalMainActivity : AppCompatActivity() {
                     if (estado.actividades.isEmpty()) {
                         binding.recyclerMisActividades.visibility = View.GONE
                         binding.tvSinActividades.visibility = View.VISIBLE
+                        binding.tvSinActividades.text = when (tabActual) {
+                            0 -> "No tienes actividades pendientes"
+                            1 -> "No tienes actividades completadas"
+                            2 -> "No tienes actividades canceladas"
+                            else -> "No hay actividades"
+                        }
                     } else {
                         binding.recyclerMisActividades.visibility = View.VISIBLE
                         binding.tvSinActividades.visibility = View.GONE
                         adapter.actualizarLista(estado.actividades)
                     }
+                }
+                is ProfesionalUiState.ActividadCancelada -> {
+                    binding.progressBar.visibility = View.GONE
+                    viewModel.filtrarPorEstado(tab = tabActual)
                 }
                 is ProfesionalUiState.Error -> {
                     binding.progressBar.visibility = View.GONE

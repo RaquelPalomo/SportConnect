@@ -27,6 +27,8 @@
         <activity android:name=".ui.basic.DetalleActividadActivity" />
         <activity android:name=".ui.basic.MisReservasActivity" />
         <activity android:name=".ui.professional.CrearActividadActivity" />
+        <activity android:name=".ui.professional.EditarActividadActivity" />
+
 
     </application>
 

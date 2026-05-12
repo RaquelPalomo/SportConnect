@@ -16,6 +16,8 @@ sealed class ProfesionalUiState {
     data class Success(val actividades: List<Actividad>) : ProfesionalUiState()
     data class Error(val mensaje: String) : ProfesionalUiState()
     object ActividadCreada : ProfesionalUiState()
+    object ActividadEditada : ProfesionalUiState()
+    object ActividadCancelada : ProfesionalUiState()
 }
 
 class ProfesionalViewModel : ViewModel() {
@@ -46,7 +48,6 @@ class ProfesionalViewModel : ViewModel() {
             _uiState.value = ProfesionalUiState.Error("El número de participantes debe ser mayor que 0")
             return
         }
-
         _uiState.value = ProfesionalUiState.Loading
         viewModelScope.launch {
             val result = repository.crearActividad(
@@ -61,19 +62,66 @@ class ProfesionalViewModel : ViewModel() {
         }
     }
 
-    // Carga directamente las pendientes al iniciar
-    fun cargarMisActividades() {
-        filtrarPorEstado(soloFuturas = true)
-    }
-
-    // Consulta Firestore directamente según el estado
-    fun filtrarPorEstado(soloFuturas: Boolean) {
+    fun editarActividad(
+        actividadId: String,
+        tipo: String,
+        descripcion: String,
+        lugar: String,
+        poblacion: String,
+        fecha: Date,
+        duracionMinutos: Int,
+        maxParticipantes: Int
+    ) {
+        if (tipo.isBlank() || descripcion.isBlank() || lugar.isBlank() || poblacion.isBlank()) {
+            _uiState.value = ProfesionalUiState.Error("Rellena todos los campos")
+            return
+        }
+        if (duracionMinutos <= 0) {
+            _uiState.value = ProfesionalUiState.Error("La duración debe ser mayor que 0")
+            return
+        }
+        if (maxParticipantes <= 0) {
+            _uiState.value = ProfesionalUiState.Error("El número de participantes debe ser mayor que 0")
+            return
+        }
         _uiState.value = ProfesionalUiState.Loading
         viewModelScope.launch {
-            val result = if (soloFuturas) {
-                repository.getMisActividadesPendientes()
+            val result = repository.editarActividad(
+                actividadId, tipo, descripcion, lugar, poblacion,
+                Timestamp(fecha), duracionMinutos, maxParticipantes
+            )
+            _uiState.value = if (result.isSuccess) {
+                ProfesionalUiState.ActividadEditada
             } else {
-                repository.getMisActividadesCompletadas()
+                ProfesionalUiState.Error("Error al editar la actividad")
+            }
+        }
+    }
+
+    fun cancelarActividad(actividadId: String) {
+        _uiState.value = ProfesionalUiState.Loading
+        viewModelScope.launch {
+            val result = repository.cancelarActividad(actividadId)
+            _uiState.value = if (result.isSuccess) {
+                ProfesionalUiState.ActividadCancelada
+            } else {
+                ProfesionalUiState.Error("Error al cancelar la actividad")
+            }
+        }
+    }
+
+    fun cargarMisActividades() {
+        filtrarPorEstado(tab = 0)
+    }
+
+    fun filtrarPorEstado(tab: Int) {
+        _uiState.value = ProfesionalUiState.Loading
+        viewModelScope.launch {
+            val result = when (tab) {
+                0 -> repository.getMisActividadesPendientes()
+                1 -> repository.getMisActividadesCompletadas()
+                2 -> repository.getMisActividadesCanceladas()
+                else -> repository.getMisActividadesPendientes()
             }
             if (result.isSuccess) {
                 _uiState.value = ProfesionalUiState.Success(result.getOrDefault(emptyList()))

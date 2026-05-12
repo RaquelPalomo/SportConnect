@@ -1,6 +1,7 @@
 package com.example.sportconnect.ui.professional
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sportconnect.data.model.Actividad
@@ -11,7 +12,9 @@ import java.util.Locale
 
 class ProfesionalActividadAdapter(
     private var actividades: List<Actividad>,
-    private val onItemClick: (Actividad) -> Unit
+    private val onItemClick: (Actividad) -> Unit,
+    private val onEditarClick: (Actividad) -> Unit = {},
+    private val onCancelarClick: (Actividad) -> Unit = {}
 ) : RecyclerView.Adapter<ProfesionalActividadAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemActividadProfesionalBinding) :
@@ -29,6 +32,7 @@ class ProfesionalActividadAdapter(
         val formato = SimpleDateFormat("dd/MM/yyyy - HH:mm'h'", Locale("es", "ES"))
         val ahora = Date()
         val esFutura = actividad.fecha?.toDate()?.after(ahora) == true
+        val tieneInscritos = actividad.participantesActuales > 0
 
         with(holder.binding) {
             tvTipo.text = actividad.tipo
@@ -42,6 +46,26 @@ class ProfesionalActividadAdapter(
             } else {
                 tvEstado.text = "Completada"
                 tvEstado.setTextColor(holder.itemView.context.getColor(android.R.color.darker_gray))
+            }
+
+            // Mostrar botones solo en actividades pendientes
+            if (esFutura) {
+                if (!tieneInscritos) {
+                    // Sin inscritos: mostrar editar y cancelar
+                    layoutBotones.visibility = View.VISIBLE
+                    btnCancelarSolo.visibility = View.GONE
+                    btnEditar.setOnClickListener { onEditarClick(actividad) }
+                    btnCancelar.setOnClickListener { onCancelarClick(actividad) }
+                } else {
+                    // Con inscritos: solo cancelar
+                    layoutBotones.visibility = View.GONE
+                    btnCancelarSolo.visibility = View.VISIBLE
+                    btnCancelarSolo.setOnClickListener { onCancelarClick(actividad) }
+                }
+            } else {
+                // Completadas: sin botones
+                layoutBotones.visibility = View.GONE
+                btnCancelarSolo.visibility = View.GONE
             }
 
             root.setOnClickListener { onItemClick(actividad) }

@@ -23,27 +23,32 @@
         android:padding="8dp"
         android:background="#22FFFFFF">
 
+        <!-- Dropdown tipo de actividad -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilFiltroTipo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Tipo de actividad"
             android:layout_marginEnd="4dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             app:hintTextColor="#FFFFFF"
             app:boxStrokeColor="#FF6B35"
             app:boxBackgroundColor="#22FFFFFF">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
                 android:id="@+id/etFiltroTipo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
+                android:inputType="none"
+                android:focusable="false"
+                android:cursorVisible="false"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#88FFFFFF" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Campo población -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"

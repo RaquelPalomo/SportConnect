@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,17 +21,43 @@ class BasicMainActivity : AppCompatActivity() {
     private val viewModel: ActividadViewModel by viewModels()
     private lateinit var adapter: ActividadAdapter
 
+    private val tiposActividad = listOf(
+        "Todas",
+        // Fitness y musculación
+        "Crossfit", "Entrenamiento personal", "Musculación", "HIIT",
+        "Functional training", "TRX", "Calistenia", "Pilates", "Stretching",
+        // Mente y cuerpo
+        "Yoga", "Meditación", "Tai Chi", "Chi Kung",
+        // Baile y ritmo
+        "Zumba", "Baile flamenco", "Baile contemporáneo", "Salsa", "Bachata", "Sevillanas",
+        // Deportes de equipo
+        "Fútbol sala", "Baloncesto", "Voleibol", "Pádel", "Tenis",
+        // Artes marciales
+        "Boxeo", "Kickboxing", "Karate", "Judo", "Taekwondo", "MMA"
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBasicMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        configurarDropdownTipo()
         configurarRecycler()
         configurarObservadores()
         configurarBotones()
 
         viewModel.cargarActividades()
+    }
+
+    private fun configurarDropdownTipo() {
+        val adapterDropdown = ArrayAdapter(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            tiposActividad
+        )
+        binding.etFiltroTipo.setAdapter(adapterDropdown)
+        binding.etFiltroTipo.setText("Todas", false)
     }
 
     private fun configurarRecycler() {
@@ -45,7 +72,8 @@ class BasicMainActivity : AppCompatActivity() {
         binding.btnFiltrar.setOnClickListener {
             val tipo = binding.etFiltroTipo.text.toString().trim()
             val poblacion = binding.etFiltroPoblacion.text.toString().trim()
-            viewModel.filtrarActividades(tipo, poblacion)
+            val tipoFiltro = if (tipo == "Todas") "" else tipo
+            viewModel.filtrarActividades(tipoFiltro, poblacion)
         }
     }
 
