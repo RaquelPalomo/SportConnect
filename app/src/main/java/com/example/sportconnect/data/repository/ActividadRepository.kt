@@ -12,7 +12,6 @@ class ActividadRepository {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-    // Obtiene todas las actividades activas, con plazas disponibles y fecha futura
     suspend fun getActividades(): Result<List<Actividad>> {
         return try {
             val snapshot = db.collection("actividades")
@@ -35,13 +34,11 @@ class ActividadRepository {
         }
     }
 
-    // Reserva una plaza en una actividad
     suspend fun reservarActividad(actividadId: String): Result<Unit> {
         return try {
             val uid = auth.currentUser?.uid
                 ?: return Result.failure(Exception("Usuario no autenticado"))
 
-            // Comprueba si ya tiene reserva
             val reservaExistente = db.collection("reservas")
                 .whereEqualTo("usuarioId", uid)
                 .whereEqualTo("actividadId", actividadId)
@@ -52,7 +49,6 @@ class ActividadRepository {
                 return Result.failure(Exception("Ya tienes una reserva para esta actividad"))
             }
 
-            // Obtiene la actividad para verificar aforo
             val actividadDoc = db.collection("actividades")
                 .document(actividadId)
                 .get()
@@ -65,18 +61,18 @@ class ActividadRepository {
                 return Result.failure(Exception("No quedan plazas disponibles"))
             }
 
-            // Crea la reserva
             val reserva = Reserva(
                 usuarioId = uid,
                 actividadId = actividadId,
                 fechaReserva = com.google.firebase.Timestamp.now()
             )
-            db.collection("reservas").add(reserva).await()
+            val reservaRef = db.collection("reservas").add(reserva).await()
+            db.collection("reservas").document(reservaRef.id)
+                .update("id", reservaRef.id)
+                .await()
 
-            // Incrementa participantes
             db.collection("actividades").document(actividadId)
-                .update("participantesActuales",
-                    actividad.participantesActuales + 1)
+                .update("participantesActuales", actividad.participantesActuales + 1)
                 .await()
 
             Result.success(Unit)
@@ -85,7 +81,6 @@ class ActividadRepository {
         }
     }
 
-    // Obtiene las reservas del usuario actual
     suspend fun getMisReservas(): Result<List<Actividad>> {
         return try {
             val uid = auth.currentUser?.uid
@@ -106,6 +101,8 @@ class ActividadRepository {
                 val doc = db.collection("actividades").document(id).get().await()
                 doc.toObject(Actividad::class.java)?.copy(id = doc.id)
             }.filterNotNull()
+                // Ordenar por fecha descendente — más reciente arriba
+                .sortedByDescending { it.fecha?.toDate() }
 
             Result.success(actividades)
         } catch (e: Exception) {

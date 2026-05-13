@@ -107,9 +107,26 @@ class BasicMainActivity : AppCompatActivity() {
     }
 
     private fun navegarADetalle(actividad: Actividad) {
-        viewModel.seleccionarActividad(actividad)
-        startActivity(Intent(this, DetalleActividadActivity::class.java))
+        val intent = Intent(this, DetalleActividadActivity::class.java).apply {
+            putExtra("actividadId", actividad.id)
+            putExtra("tipo", actividad.tipo)
+            putExtra("descripcion", actividad.descripcion)
+            putExtra("profesorNombre", actividad.profesorNombre)
+            putExtra("lugar", actividad.lugar)
+            putExtra("poblacion", actividad.poblacion)
+            putExtra("duracionMinutos", actividad.duracionMinutos)
+            putExtra("maxParticipantes", actividad.maxParticipantes)
+            putExtra("participantesActuales", actividad.participantesActuales)
+            putExtra("fechaMillis", actividad.fecha?.toDate()?.time ?: 0L)
+        }
+        startActivity(intent)
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.cargarActividades()
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_basic, menu)

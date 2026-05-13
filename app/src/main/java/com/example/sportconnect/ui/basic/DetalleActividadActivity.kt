@@ -8,12 +8,14 @@ import com.example.sportconnect.databinding.ActivityDetalleActividadBinding
 import com.example.sportconnect.viewmodel.ActividadUiState
 import com.example.sportconnect.viewmodel.ActividadViewModel
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class DetalleActividadActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetalleActividadBinding
     private val viewModel: ActividadViewModel by viewModels()
+    private var actividadId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +25,7 @@ class DetalleActividadActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Detalle de actividad"
 
+        cargarDatosDesdeIntent()
         configurarObservadores()
         configurarBotones()
     }
@@ -32,27 +35,37 @@ class DetalleActividadActivity : AppCompatActivity() {
         return true
     }
 
-    private fun configurarObservadores() {
-        viewModel.actividadDetalle.observe(this) { actividad ->
-            actividad?.let {
-                val formato = SimpleDateFormat("dd/MM/yyyy - HH:mm'h'", Locale("es", "ES"))
-                with(binding) {
-                    tvTipo.text = it.tipo
-                    tvDescripcion.text = it.descripcion
-                    tvProfesor.text = "Profesor: ${it.profesorNombre}"
-                    tvLugar.text = "Lugar: ${it.lugar}, ${it.poblacion}"
-                    tvFecha.text = "Fecha: ${it.fecha?.let { f -> formato.format(f.toDate()) } ?: "Sin fecha"}"
-                    tvDuracion.text = "Duración: ${it.duracionMinutos} minutos"
-                    tvPlazas.text = "Plazas disponibles: ${it.maxParticipantes - it.participantesActuales}/${it.maxParticipantes}"
+    private fun cargarDatosDesdeIntent() {
+        actividadId = intent.getStringExtra("actividadId") ?: ""
+        val tipo = intent.getStringExtra("tipo") ?: ""
+        val descripcion = intent.getStringExtra("descripcion") ?: ""
+        val profesorNombre = intent.getStringExtra("profesorNombre") ?: ""
+        val lugar = intent.getStringExtra("lugar") ?: ""
+        val poblacion = intent.getStringExtra("poblacion") ?: ""
+        val duracionMinutos = intent.getIntExtra("duracionMinutos", 0)
+        val maxParticipantes = intent.getIntExtra("maxParticipantes", 0)
+        val participantesActuales = intent.getIntExtra("participantesActuales", 0)
+        val fechaMillis = intent.getLongExtra("fechaMillis", 0L)
 
-                    if (it.participantesActuales >= it.maxParticipantes) {
-                        btnReservar.isEnabled = false
-                        btnReservar.text = "Sin plazas disponibles"
-                    }
-                }
+        val formato = SimpleDateFormat("dd/MM/yyyy - HH:mm'h'", Locale("es", "ES"))
+
+        with(binding) {
+            tvTipo.text = tipo
+            tvDescripcion.text = descripcion
+            tvProfesor.text = "Profesor: $profesorNombre"
+            tvLugar.text = "Lugar: $lugar, $poblacion"
+            tvFecha.text = "Fecha: ${if (fechaMillis > 0) formato.format(Date(fechaMillis)) else "Sin fecha"}"
+            tvDuracion.text = "Duración: $duracionMinutos minutos"
+            tvPlazas.text = "Plazas disponibles: ${maxParticipantes - participantesActuales}/$maxParticipantes"
+
+            if (participantesActuales >= maxParticipantes) {
+                btnReservar.isEnabled = false
+                btnReservar.text = "Sin plazas disponibles"
             }
         }
+    }
 
+    private fun configurarObservadores() {
         viewModel.uiState.observe(this) { estado ->
             when (estado) {
                 is ActividadUiState.Loading -> {
@@ -84,8 +97,8 @@ class DetalleActividadActivity : AppCompatActivity() {
 
     private fun configurarBotones() {
         binding.btnReservar.setOnClickListener {
-            viewModel.actividadDetalle.value?.id?.let { id ->
-                viewModel.reservarActividad(id)
+            if (actividadId.isNotEmpty()) {
+                viewModel.reservarActividad(actividadId)
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.example.sportconnect.ui.basic
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sportconnect.databinding.ActivityMisReservasBinding
 import com.example.sportconnect.viewmodel.ActividadUiState
 import com.example.sportconnect.viewmodel.ActividadViewModel
+import java.util.Date
 
 class MisReservasActivity : AppCompatActivity() {
 
@@ -28,13 +30,33 @@ class MisReservasActivity : AppCompatActivity() {
         viewModel.cargarMisReservas()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.cargarMisReservas()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true
     }
 
     private fun configurarRecycler() {
-        adapter = ActividadAdapter(emptyList()) {}
+        adapter = ActividadAdapter(emptyList()) { actividad ->
+            // Navegar al detalle de la reserva
+            val intent = Intent(this, DetalleActividadActivity::class.java).apply {
+                putExtra("actividadId", actividad.id)
+                putExtra("tipo", actividad.tipo)
+                putExtra("descripcion", actividad.descripcion)
+                putExtra("profesorNombre", actividad.profesorNombre)
+                putExtra("lugar", actividad.lugar)
+                putExtra("poblacion", actividad.poblacion)
+                putExtra("duracionMinutos", actividad.duracionMinutos)
+                putExtra("maxParticipantes", actividad.maxParticipantes)
+                putExtra("participantesActuales", actividad.participantesActuales)
+                putExtra("fechaMillis", actividad.fecha?.toDate()?.time ?: 0L)
+            }
+            startActivity(intent)
+        }
         binding.recyclerMisReservas.layoutManager = LinearLayoutManager(this)
         binding.recyclerMisReservas.adapter = adapter
     }

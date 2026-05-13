@@ -15,12 +15,36 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Franja naranja superior -->
+        <!-- Franja superior — naranja normal o roja si cancelada -->
         <View
+            android:id="@+id/viewFranja"
             android:layout_width="48dp"
             android:layout_height="3dp"
             android:background="#FF6B35"
             android:layout_marginBottom="12dp" />
+
+        <!-- Aviso cancelación — oculto por defecto -->
+        <LinearLayout
+            android:id="@+id/layoutCancelada"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#33FF0000"
+            android:padding="8dp"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="⚠️ Clase cancelada por el profesional"
+                android:textSize="13sp"
+                android:textColor="#FF6B6B"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvTipo"

@@ -33,6 +33,7 @@ class ProfesionalActividadAdapter(
         val ahora = Date()
         val esFutura = actividad.fecha?.toDate()?.after(ahora) == true
         val tieneInscritos = actividad.participantesActuales > 0
+        val estaCancelada = !actividad.activa
 
         with(holder.binding) {
             tvTipo.text = actividad.tipo
@@ -40,32 +41,37 @@ class ProfesionalActividadAdapter(
             tvLugar.text = "${actividad.lugar}, ${actividad.poblacion}"
             tvInscritos.text = "Inscritos: ${actividad.participantesActuales}/${actividad.maxParticipantes}"
 
-            if (esFutura) {
-                tvEstado.text = "Pendiente"
-                tvEstado.setTextColor(holder.itemView.context.getColor(android.R.color.holo_green_dark))
-            } else {
-                tvEstado.text = "Completada"
-                tvEstado.setTextColor(holder.itemView.context.getColor(android.R.color.darker_gray))
-            }
-
-            // Mostrar botones solo en actividades pendientes
-            if (esFutura) {
-                if (!tieneInscritos) {
-                    // Sin inscritos: mostrar editar y cancelar
-                    layoutBotones.visibility = View.VISIBLE
-                    btnCancelarSolo.visibility = View.GONE
-                    btnEditar.setOnClickListener { onEditarClick(actividad) }
-                    btnCancelar.setOnClickListener { onCancelarClick(actividad) }
-                } else {
-                    // Con inscritos: solo cancelar
+            // Estado de la tarjeta
+            when {
+                estaCancelada -> {
+                    tvEstado.text = "Cancelada"
+                    tvEstado.setTextColor(holder.itemView.context.getColor(android.R.color.holo_red_light))
                     layoutBotones.visibility = View.GONE
-                    btnCancelarSolo.visibility = View.VISIBLE
-                    btnCancelarSolo.setOnClickListener { onCancelarClick(actividad) }
+                    btnCancelarSolo.visibility = View.GONE
                 }
-            } else {
-                // Completadas: sin botones
-                layoutBotones.visibility = View.GONE
-                btnCancelarSolo.visibility = View.GONE
+                esFutura -> {
+                    tvEstado.text = "Pendiente"
+                    tvEstado.setTextColor(holder.itemView.context.getColor(android.R.color.holo_green_dark))
+                    if (!tieneInscritos) {
+                        // Sin inscritos: editar y cancelar
+                        layoutBotones.visibility = View.VISIBLE
+                        btnCancelarSolo.visibility = View.GONE
+                        btnEditar.setOnClickListener { onEditarClick(actividad) }
+                        btnCancelar.setOnClickListener { onCancelarClick(actividad) }
+                    } else {
+                        // Con inscritos: solo cancelar
+                        layoutBotones.visibility = View.GONE
+                        btnCancelarSolo.visibility = View.VISIBLE
+                        btnCancelarSolo.setOnClickListener { onCancelarClick(actividad) }
+                    }
+                }
+                else -> {
+                    // Completada
+                    tvEstado.text = "Completada"
+                    tvEstado.setTextColor(holder.itemView.context.getColor(android.R.color.darker_gray))
+                    layoutBotones.visibility = View.GONE
+                    btnCancelarSolo.visibility = View.GONE
+                }
             }
 
             root.setOnClickListener { onItemClick(actividad) }
