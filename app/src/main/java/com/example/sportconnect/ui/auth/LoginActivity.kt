@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.sportconnect.databinding.ActivityLoginBinding
 import com.example.sportconnect.viewmodel.AuthUiState
 import com.example.sportconnect.viewmodel.AuthViewModel
@@ -18,6 +20,12 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(0, 0, 0, systemBars.bottom)
+            insets
+        }
 
         configurarBotones()
         configurarObservadores()
